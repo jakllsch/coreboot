@@ -1,0 +1,2 @@
+config BOARD_SUNW_ULTRA40M2_FAM10
+	bool "Ultra 40 M2 (Fam10)"
