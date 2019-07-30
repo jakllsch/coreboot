@@ -74,7 +74,7 @@ unsigned long write_pirq_routing_table(unsigned long addr)
 	pirq->signature = PIRQ_SIGNATURE;
 	pirq->version = PIRQ_VERSION;
 
-	pirq->rtr_bus = m->bus_mcp55[0];
+	pirq->rtr_bus = m->bus_mcp55;
 	pirq->rtr_devfn = ((sbdn + 6) << 3) | 0;
 
 	pirq->exclusive_irqs = 0;
@@ -89,7 +89,7 @@ unsigned long write_pirq_routing_table(unsigned long addr)
 	pirq_info = (void *)(&pirq->checksum + 1);
 	slot_num = 0;
 //pci bridge
-	write_pirq_info(pirq_info, m->bus_mcp55[0], ((sbdn + 6) << 3) | 0, 0x1,
+	write_pirq_info(pirq_info, m->bus_mcp55, ((sbdn + 6) << 3) | 0, 0x1,
 			0xdef8, 0x2, 0xdef8, 0x3, 0xdef8, 0x4, 0xdef8, 0, 0);
 	pirq_info++;
 	slot_num++;

@@ -194,10 +194,10 @@ static void setup_mb_resource_map(void)
 		 *	   This field defines the end of PCI I/O region n
 		 * [31:25] Reserved
 		 */
-//		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xC4), 0xFE000FC8, 0x00007000,
-//		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xCC), 0xFE000FC8, 0x01fff020, // need to talk to ANALOG of second CK804 to release PCI E reset
-		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xD4), 0xFE000FC8, 0x00000000,
-		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xDC), 0xFE000FC8, 0x00000000,
+		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xC4), 0xFE000F88, 0x00003010,
+		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xCC), 0xFE000F88, 0x00007020, // need to talk to ANALOG of second CK804 to release PCI E reset
+		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xD4), 0xFE000F88, 0x00000000,
+		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xDC), 0xFE000F88, 0x00000000,
 
 		/* PCI I/O Base i Registers
 		 * F1:0xC0 i = 0
@@ -224,8 +224,8 @@ static void setup_mb_resource_map(void)
 		 *	   This field defines the start of PCI I/O region n
 		 * [31:25] Reserved
 		 */
-//		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xC0), 0xFE000FCC, 0x00000033,
-//		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xC8), 0xFE000FCC, 0x00008033,
+		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xC0), 0xFE000FCC, 0x00001003,
+		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xC8), 0xFE000FCC, 0x00004003,
 		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xD0), 0xFE000FCC, 0x00000000,
 		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xD8), 0xFE000FCC, 0x00000000,
 
@@ -265,11 +265,13 @@ static void setup_mb_resource_map(void)
 		 * [31:24] Bus Number Limit i
 		 *	   This field defines the highest bus number in configuration region i
 		 */
-//		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xE0), 0x0000FC88, 0x3f000003, /* link 0 of CPU 0 --> Nvidia MCP55 Pro */
-//		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xE4), 0x0000FC88, 0x7f400203, /* link 2 of CPU 0 --> nvidia io55 	*/
-		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xE8), 0x0000FC88, 0x00000000,
-		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xEC), 0x0000FC88, 0x00000000,
+		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xE0), 0x0000F888, 0x3f000103, /* link 1 of cpu 0 --> Nvidia MCP55 Pro */
+		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xE4), 0x0000F888, 0x7f400203, /* link 2 of cpu 0 --> nvidia io55   */
+		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xE8), 0x0000F888, 0x00000000,
+		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 1, 0xEC), 0x0000F888, 0x00000000,
 
+		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 0, 0xB4), 0xFFFF00FF, 0x00000000, /* cpu 0, link 1: bus 0 */
+		PCI_ADDR(CONFIG_CBB, CONFIG_CDB, 0, 0xD4), 0xFFFF00FF, 0x00004000, /* cpu 0, link 2: bus 0x40 */
 	};
 
 	int max;

@@ -33,8 +33,7 @@
 #include <delay.h>
 #include <cpu/x86/lapic.h>
 #include <cpu/amd/car.h>
-#include <superio/winbond/common/winbond.h>
-#include <superio/winbond/w83627hf/w83627hf.h>
+#include <superio/smsc/dme1737/dme1737.h>
 #include <cpu/x86/bist.h>
 #include <northbridge/amd/amdfam10/raminit.h>
 #include <northbridge/amd/amdht/ht_wrapper.h>
@@ -46,7 +45,7 @@
 #include "resourcemap.c"
 #include "cpu/amd/quadcore/quadcore.c"
 
-#define SERIAL_DEV PNP_DEV(0x2e, W83627HF_SP1)
+#define SERIAL_DEV PNP_DEV(0x2e, DME1737_SP1)
 
 void activate_spd_rom(const struct mem_controller *ctrl);
 int spd_read_byte(unsigned device, unsigned address);
@@ -59,13 +58,11 @@ inline int spd_read_byte(unsigned device, unsigned address)
 	return smbus_read_byte(device, address);
 }
 
+#define NMI_SC 0x0061
+#define PCI_SERR_EN 0x04
+
 #define MCP55_MB_SETUP \
-	RES_PORT_IO_8, SYSCTRL_IO_BASE + 0xc0+37, 0x00, 0x44,/* GPIO38 PCI_REQ3 */ \
-	RES_PORT_IO_8, SYSCTRL_IO_BASE + 0xc0+38, 0x00, 0x44,/* GPIO39 PCI_GNT3 */ \
-	RES_PORT_IO_8, SYSCTRL_IO_BASE + 0xc0+39, 0x00, 0x44,/* GPIO40 PCI_GNT2 */ \
-	RES_PORT_IO_8, SYSCTRL_IO_BASE + 0xc0+40, 0x00, 0x44,/* GPIO41 PCI_REQ2 */ \
-	RES_PORT_IO_8, SYSCTRL_IO_BASE + 0xc0+59, 0x00, 0x60,/* GPIP60 FANCTL0 */ \
-	RES_PORT_IO_8, SYSCTRL_IO_BASE + 0xc0+60, 0x00, 0x60,/* GPIO61 FANCTL1 */
+	RES_PORT_IO_8, SYSCTRL_IO_BASE + 0xc0+61, 0x00, 0x05,/* GPIO62: enable/not-disable on-board TSB43AB22A Firewire */
 
 #include <southbridge/nvidia/mcp55/early_setup_ss.h>
 #include "southbridge/nvidia/mcp55/early_setup_car.c"
@@ -134,7 +131,7 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 
 	post_code(0x32);
 
-	winbond_enable_serial(SERIAL_DEV, CONFIG_TTYS0_BASE);
+	dme1737_enable_serial(SERIAL_DEV, CONFIG_TTYS0_BASE);
 	console_init();
 
 	/* Halt if there was a built in self test failure */
@@ -211,6 +208,9 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 
 	wants_reset = mcp55_early_setup_x();
 
+	/* mask NMI from constantly-asserted-on-this-board SERR# */
+	outb((inb(NMI_SC) & 0x0f) | PCI_SERR_EN, NMI_SC);
+
 	/* Reset for HT, FIDVID, PLL and errata changes to take affect. */
 	if (!warm_reset_detect(0)) {
 		printk(BIOS_INFO, "...WARM RESET...\n\n\n");
@@ -264,14 +264,12 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
  */
 BOOL AMD_CB_ManualBUIDSwapList (u8 node, u8 link, const u8 **List)
 {
-	static const u8 swaplist[] = { 0xFF, CONFIG_HT_CHAIN_UNITID_BASE, CONFIG_HT_CHAIN_END_UNITID_BASE, 0xFF };
-	/* If the BUID was adjusted in early_ht we need to do the manual override */
-	if ((CONFIG_HT_CHAIN_UNITID_BASE != 0) && (CONFIG_HT_CHAIN_END_UNITID_BASE != 0)) {
-		printk(BIOS_DEBUG, "AMD_CB_ManualBUIDSwapList()\n");
-		if ((node == 0) && (link == 0)) {	/* BSP SB link */
-			*List = swaplist;
-			return 1;
-		}
+	static const u8 swaplist[] = { 0xFF, CONFIG_HT_CHAIN_UNITID_BASE, 0xFF };
+
+	// MCP55 on link 1, IO55 on link 2
+	if (node == 0 && (link == 1 || link == 2)) {
+		*List = swaplist;
+		return 1;
 	}
 
 	return 0;

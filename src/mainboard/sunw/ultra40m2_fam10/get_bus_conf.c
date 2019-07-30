@@ -65,7 +65,6 @@ void get_bus_conf(void)
 	unsigned apicid_base;
 	struct mb_sysconf_t *m;
 
-	device_t dev;
 	int i;
 
 	if(get_bus_conf_done == 1) return; //do it only once
@@ -85,27 +84,15 @@ void get_bus_conf(void)
 
 	get_pci1234();
 
+	for (unsigned int j = 0; j < sysconf.hc_possible_num; j++) {
+		printk(BIOS_INFO, "%s hcdn %u %x\n", __func__, j, sysconf.hcdn[j]);
+		printk(BIOS_INFO, "%s pci1234 %u %x\n", __func__, j, sysconf.pci1234[j]);
+	}
+
 	sysconf.sbdn = (sysconf.hcdn[0] & 0xff); // first byte of first chain
-	m->bus_mcp55[0] = (sysconf.pci1234[0] >> 12) & 0xff;
-
-		/* MCP55 */
-		dev = dev_find_slot(m->bus_mcp55[0], PCI_DEVFN(sysconf.sbdn + 0x06,0));
-		if (dev) {
-			m->bus_mcp55[1] = pci_read_config8(dev, PCI_SECONDARY_BUS);
-		}
-		else {
-			printk(BIOS_DEBUG, "ERROR - could not find PCI 1:%02x.0, using defaults\n", sysconf.sbdn + 0x06);
-		}
-
-		for(i = 2; i < 8; i++) {
-			dev = dev_find_slot(m->bus_mcp55[0], PCI_DEVFN(sysconf.sbdn + 0x0a + i - 2 , 0));
-			if (dev) {
-				m->bus_mcp55[i] = pci_read_config8(dev, PCI_SECONDARY_BUS);
-			}
-			else {
-				printk(BIOS_DEBUG, "ERROR - could not find PCI %02x:%02x.0, using defaults\n", m->bus_mcp55[0], sysconf.sbdn + 0x0a + i - 2 );
-			}
-		}
+	m->sbdnb = (sysconf.hcdn[1] & 0xff); // first byte of second chain
+	m->bus_mcp55 = (sysconf.pci1234[0] >> 12) & 0xff;
+	m->bus_mcp55b = (sysconf.pci1234[1] >> 12) & 0xff;
 
 /*I/O APICs:	APIC ID	Version	State		Address*/
 	if (IS_ENABLED(CONFIG_LOGICAL_CPUS))
@@ -113,4 +100,5 @@ void get_bus_conf(void)
 	else
 		apicid_base = CONFIG_MAX_PHYSICAL_CPUS;
 	m->apicid_mcp55 = apicid_base+0;
+	m->apicid_mcp55b = apicid_base+1;
 }
