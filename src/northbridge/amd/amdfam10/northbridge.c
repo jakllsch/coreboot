@@ -237,6 +237,7 @@ static void amd_g34_fixup(struct bus *link, device_t dev)
 static void amdfam10_scan_chain(struct bus *link)
 {
 		unsigned int next_unitid;
+		uint16_t sub;
 
 		/* See if there is an available configuration space mapping
 		 * register in function 1.
@@ -252,7 +253,10 @@ static void amdfam10_scan_chain(struct bus *link)
 		ht_route_link(link, HT_ROUTE_SCAN);
 
 		/* set the config map space */
+		sub = link->subordinate;
+		link->subordinate = 0xfc;
 		set_config_map_reg(link);
+		link->subordinate = sub;
 
 		/* Now we can scan all of the subordinate busses i.e. the
 		 * chain on the hypertranport link
