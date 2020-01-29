@@ -10,6 +10,7 @@
  *   LDN		State
  * 0x1 PP		Implemented, untested
  * 0x2 SP1		Implemented, untested
+ * 0x3 SP2		Implemented, untested
  * 0x5 KBC		Implemented, untested
  * 0x8 GPIO		Implemented, untested
  * 0xb HWM		Implemented, untested
@@ -19,6 +20,7 @@
  * SUPERIO_PNP_BASE	I/O address of the first PnP configuration register
  * NCT6776_SHOW_PP	If defined, the parallel port will be exposed.
  * NCT6776_SHOW_SP1	If defined, Serial Port 1 will be exposed.
+ * NCT6776_SHOW_SP2	If defined, Serial Port 2 will be exposed.
  * NCT6776_SHOW_KBC	If defined, the Keyboard Controller will be exposed.
  * NCT6776_SHOW_GPIO	If defined, GPIO support will be exposed.
  * NCT6776_SHOW_HWM	If defined, the Environment Controller will be exposed.
@@ -129,6 +131,16 @@ Device(SUPERIO_DEV) {
 	#undef SUPERIO_UART_PM_VAL
 	#undef SUPERIO_UART_PM_LDN
 	#define SUPERIO_UART_LDN 2
+	#include <superio/acpi/pnp_uart.asl>
+#endif
+
+#ifdef NCT6776_SHOW_SP2
+	#undef SUPERIO_UART_LDN
+	#undef SUPERIO_UART_DDN
+	#undef SUPERIO_UART_PM_REG
+	#undef SUPERIO_UART_PM_VAL
+	#undef SUPERIO_UART_PM_LDN
+	#define SUPERIO_UART_LDN 3
 	#include <superio/acpi/pnp_uart.asl>
 #endif
 
