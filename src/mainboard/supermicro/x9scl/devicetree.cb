@@ -113,6 +113,11 @@ chip northbridge/intel/sandybridge
 					end
 					device pnp 164e.3 off end
 					device pnp 164e.6 off end
+					device pnp 164e.11 on
+						io 0x60 = 0x0ca2
+						io 0x62 = 0x0ca3
+						irq 0x70 = 0
+					end
 				end
 			end
 			device pci 1f.2 on  end # SATA Controller 1
