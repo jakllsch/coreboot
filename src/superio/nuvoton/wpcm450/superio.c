@@ -32,6 +32,7 @@ static struct pnp_info pnp_dev_info[] = {
 		0x07f8, },
 	{ NULL, WPCM450_SP1,  PNP_IO0 | PNP_IRQ0, 0x07f8, },
 	{ NULL, WPCM450_KBCK, PNP_IO0 | PNP_IO1 | PNP_IRQ0, 0x07ff, 0x07ff, },
+	{ NULL, WPCM450_KCS,  PNP_IO0 | PNP_IO1 | PNP_IRQ0, 0x0fff, 0x0fff, },
 };
 
 static void enable_dev(struct device *dev)
