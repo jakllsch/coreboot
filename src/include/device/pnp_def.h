@@ -1,6 +1,7 @@
 #ifndef DEVICE_PNP_DEF_H
 #define DEVICE_PNP_DEF_H
 
+#define PNP_IDX_LDN  0x07
 #define PNP_IDX_EN   0x30
 #define PNP_IDX_IO0  0x60
 #define PNP_IDX_IO1  0x62
