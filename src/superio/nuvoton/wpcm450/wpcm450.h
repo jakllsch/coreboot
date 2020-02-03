@@ -8,6 +8,6 @@
 #define WPCM450_KBCK 0x06 /* Keyboard */
 #define WPCM450_KCS  0x11 /* IPMI KCS */
 
-void wpcm450_enable_dev(u8 dev, u16 port, u16 iobase);
+void wpcm450_enable_serial(pnp_devfn_t dev, u16 iobase);
 
 #endif
