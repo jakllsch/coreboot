@@ -30,7 +30,7 @@ static __always_inline
 void pnp_set_logical_device(pnp_devfn_t dev)
 {
 	unsigned int device = dev & 0xff;
-	pnp_write_config(dev, 0x07, device);
+	pnp_write_config(dev, PNP_IDX_LDN, device);
 }
 
 static __always_inline
