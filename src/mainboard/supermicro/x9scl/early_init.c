@@ -94,6 +94,28 @@ static void bmc_init(void)
 	pnp_set_iobase(dev, PNP_IDX_IO1, X9SCL_WPCM450_KCS_BASE + 1);
 	pnp_set_iobase(dev, PNP_IDX_IRQ0, 0);
 	pnp_set_enable(dev, 1);
+
+#if 0
+	dev = PNP_DEV(X9SCL_WPCM450_PNP_BASE, WPCM450_SP2);
+#if 1
+	wpcm450_enable_serial(dev, 0x03e8);
+#else
+	pnp_set_logical_device(dev);
+	pnp_set_enable(dev, 0);
+	pnp_set_iobase(dev, PNP_IDX_IO0, 0x03e8);
+	pnp_set_enable(dev, 1);
+#endif
+
+	dev = PNP_DEV(X9SCL_WPCM450_PNP_BASE, WPCM450_SP1);
+#if 0
+	wpcm450_enable_serial(dev, 0x02e8);
+#else
+	pnp_set_logical_device(dev);
+	pnp_set_enable(dev, 0);
+	pnp_set_iobase(dev, PNP_IDX_IO0, 0x02e8);
+	pnp_set_enable(dev, 0);
+#endif
+#endif
 }
 
 void bootblock_mainboard_early_init(void)
