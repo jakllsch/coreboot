@@ -91,22 +91,45 @@ Device(SUPERIO_DEV) {
 	#include <superio/acpi/pnp_config.asl>
 
 #ifdef WPCM450_SHOW_SP1
-	#undef SUPERIO_UART_LDN
-	#undef SUPERIO_UART_DDN
-	#undef SUPERIO_UART_PM_REG
-	#undef SUPERIO_UART_PM_VAL
-	#undef SUPERIO_UART_PM_LDN
-	#define SUPERIO_UART_LDN 3
-	#include <superio/acpi/pnp_uart.asl>
+	#undef SUPERIO_PNP_HID
+	#undef SUPERIO_PNP_LDN
+	#undef SUPERIO_PNP_DDN
+	#undef SUPERIO_PNP_PM_REG
+	#undef SUPERIO_PNP_PM_VAL
+	#undef SUPERIO_PNP_PM_LDN
+	#undef SUPERIO_PNP_IO0
+	#undef SUPERIO_PNP_IO1
+	#undef SUPERIO_PNP_IO2
+	#undef SUPERIO_PNP_IRQ0
+	#undef SUPERIO_PNP_IRQ1
+	#undef SUPERIO_PNP_DMA
+	#define SUPERIO_PNP_HID "PNP0501"
+	#define SUPERIO_PNP_LDN 3
+	#define SUPERIO_PNP_IO0 0x08, 0x08
+	#define SUPERIO_PNP_IRQ0
+	#define SUPERIO_PNP_DMA
+
+	#include <superio/acpi/pnp_generic.asl>
 #endif
 
 #ifdef WPCM450_SHOW_SP2
-	#undef SUPERIO_UART_LDN
-	#undef SUPERIO_UART_DDN
-	#undef SUPERIO_UART_PM_REG
-	#undef SUPERIO_UART_PM_VAL
-	#undef SUPERIO_UART_PM_LDN
-	#define SUPERIO_UART_LDN 2
-	#include <superio/acpi/pnp_uart.asl>
+	#undef SUPERIO_PNP_HID
+	#undef SUPERIO_PNP_LDN
+	#undef SUPERIO_PNP_DDN
+	#undef SUPERIO_PNP_PM_REG
+	#undef SUPERIO_PNP_PM_VAL
+	#undef SUPERIO_PNP_PM_LDN
+	#undef SUPERIO_PNP_IO0
+	#undef SUPERIO_PNP_IO1
+	#undef SUPERIO_PNP_IO2
+	#undef SUPERIO_PNP_IRQ0
+	#undef SUPERIO_PNP_IRQ1
+	#undef SUPERIO_PNP_DMA
+	#define SUPERIO_PNP_HID "PNP0501"
+	#define SUPERIO_PNP_LDN 2
+	#define SUPERIO_PNP_IO0 0x08, 0x08
+	#define SUPERIO_PNP_IRQ0
+	#define SUPERIO_PNP_DMA
+	#include <superio/acpi/pnp_generic.asl>
 #endif
 }
