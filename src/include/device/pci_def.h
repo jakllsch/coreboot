@@ -431,6 +431,7 @@
 #define  PCI_EXP_LNKCTL_CCC	0x40	/* Common Clock COnfiguration */
 #define  PCI_EXP_EN_CLK_PM	0x100	/* Enable Clock Power Management */
 #define PCI_EXP_LNKSTA		18	/* Link Status */
+#define  PCI_EXP_LNKSTA_LW	0x3F0	/* Link Width */
 #define  PCI_EXP_LNKSTA_LT	0x800	/* Link Training */
 #define  PCI_EXP_LNKSTA_SLC	0x1000	/* Slot Clock Configuration */
 #define PCI_EXP_SLTCAP		20	/* Slot Capabilities */
@@ -445,6 +446,8 @@
 #define  PCI_EXP_RTCTL_CRSSVE	0x10	/* CRS Software Visibility Enable */
 #define PCI_EXP_RTCAP		30	/* Root Capabilities */
 #define PCI_EXP_RTSTA		32	/* Root Status */
+#define PCI_EXP_LNKCTL2		48	/* Link Control 2 */
+#define  PCI_EXP_LNKCTL2_TLS	0x000f	/* Target Link Speed */
 
 /* Extended Capabilities (PCI-X 2.0 and Express) */
 #define PCI_EXT_CAP_ID(header)		(header & 0x0000ffff)

@@ -112,6 +112,38 @@ static void pciexp_enable_common_clock(struct device *root, unsigned int root_ca
 	}
 }
 
+static void pciexp_limit_speed(struct device *dev, unsigned int cap)
+{
+	u16 x, y;
+
+	x = pci_read_config16(dev, cap + PCI_EXP_FLAGS);
+
+	/* is this new enough to support LNKCTL2? */
+	if ((x & PCI_EXP_FLAGS_VERS) <= 1)
+		return;
+
+	y = pci_read_config16(dev, cap + PCI_EXP_LNKCTL2);
+	y &= PCI_EXP_LNKCTL2_TLS;
+
+	do {
+		/* link up? */
+		x = pci_read_config16(dev, cap + PCI_EXP_LNKSTA);
+		x = (x & PCI_EXP_LNKSTA_LW) >> 4;
+		if (x > 0)
+			return;
+
+		printk(BIOS_INFO, "%s: link down; retraining at target link speed %u\n",
+		       dev_path(dev), y);
+
+		x = pci_read_config16(dev, cap + PCI_EXP_LNKCTL2);
+		x &= ~PCI_EXP_LNKCTL2_TLS;
+		x |= y & PCI_EXP_LNKCTL2_TLS;
+		pci_write_config16(dev, cap + PCI_EXP_LNKCTL2, x);
+
+		pciexp_retrain_link(dev, cap);
+	} while (--y > 0);
+}
+
 static void pciexp_enable_clock_power_pm(struct device *endp, unsigned int endp_cap)
 {
 	/* check if per port clk req is supported in device */
@@ -492,6 +524,12 @@ void pciexp_scan_bus(struct bus *bus, unsigned int min_devfn,
 
 void pciexp_scan_bridge(struct device *dev)
 {
+	unsigned int cap;
+
+	cap = pci_find_capability(dev, PCI_CAP_ID_PCIE);
+	if (cap)
+		pciexp_limit_speed(dev, cap);
+	
 	do_pci_scan_bridge(dev, pciexp_scan_bus);
 	pciexp_enable_ltr(dev);
 }
